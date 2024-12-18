@@ -1,0 +1,774 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>kodak</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <link
+      rel="stylesheet"
+      href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://site-assets.fontawesome.com/releases/v6.1.2/css/all.css"
+    />
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" sizes="16x16">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/reponsive.css" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/ScrollTrigger.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/ScrollToPlugin.min.js"></script>
+    <script>
+	window.addEventListener("load", function () {
+    let body = document.body;
+    let tab = document.querySelector(".tab");
+    let dim = document.querySelector(".dim");
+    let mobile = document.querySelector("#mobile");
+
+    tab.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        let isActive = mobile.classList.contains("active");
+        if (!isActive) {
+            body.classList.add("fixed");
+            mobile.classList.add("active");
+            dim.classList.add("active");
+            tab.classList.add("active");
+        } else {
+            body.classList.remove("fixed");
+            mobile.classList.remove("active");
+            dim.classList.remove("active");
+            tab.classList.remove("active");
+        }
+    });
+
+    dim.addEventListener("click", function (e) {
+        e.preventDefault();
+        body.classList.remove("fixed");
+        mobile.classList.remove("active");
+        dim.classList.remove("active");
+        tab.classList.remove("active");
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 720) {
+            if (mobile.classList.contains("active")) {
+                body.classList.remove("fixed");
+                mobile.classList.remove("active");
+                dim.classList.remove("active");
+                tab.classList.remove("active");
+            }
+        }
+    });
+
+    // gsap 섹션 애니메이션
+    let desktop = document.querySelector("#desktop");
+    let menuList = desktop.querySelectorAll("li");
+    let pageList = [
+        document.querySelector("#start"),
+        document.querySelector("#business"),
+        document.querySelector("#portfolio"),
+        document.querySelector("#culture"),
+        document.querySelector("#awards"),
+        document.querySelector("#contact"),
+    ];
+
+	
+
+    // 스크롤 시 고정 메뉴 설정
+	window.addEventListener("scroll", function () {
+		let header = document.querySelector("#header");
+		if (window.scrollY > 150) {
+			if (!header.classList.contains("fixed")) {
+				header.classList.add("fixed");
+			}
+		} else {
+			if (header.classList.contains("fixed")) {
+				header.classList.remove("fixed");
+			}
+		}
+	});
+
+	// 스크롤 시 현재 보이는 섹션에 해당하는 메뉴 항목을 활성화
+	window.addEventListener("scroll", function () {
+		pageList.forEach((section, index) => {
+			const rect = section.getBoundingClientRect();
+			if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+				handleScroll(index);
+			}
+		});
+	});
+
+	function handleScroll(index){
+		menuList.forEach(function(item, i){
+			if(i == index){
+				item.classList.add("active");
+			}
+			else{
+				item.classList.remove("active");
+			}
+		});
+	}
+
+    // 메뉴 클릭 시 해당 섹션으로 스크롤 이동
+	menuList.forEach(function (item, i) {
+		item.addEventListener("click", function (e) {
+			e.preventDefault();
+			gsap.to(window, {
+				scrollTo: { y: pageList[i].offsetTop, autoKill: false },
+				duration: 0.5,
+				onComplete: function () {
+					// 스크롤 후에 해당 섹션에 맞는 색상을 업데이트
+					handleScroll(i);
+				}
+			});
+		});
+	});
+
+	let mobileMenuList = mobile.querySelectorAll("li");
+
+	// 모바일 메뉴 클릭 시 해당 섹션으로 스크롤 이동 및 메뉴 닫기
+	mobileMenuList.forEach(function (item, i) {
+		item.addEventListener("click", function (e) {
+			e.preventDefault();
+			gsap.to(window, {
+				scrollTo: { y: pageList[i].offsetTop, autoKill: false },
+				duration: 0.5,
+			});
+			body.classList.remove("fixed");
+			mobile.classList.remove("active");
+			dim.classList.remove("active");
+			tab.classList.remove("active");
+		});
+	});
+
+
+    // gsap 애니메이션 적용
+    const startTl = gsap.timeline();
+    startTl
+        .fromTo("#start .slider .text p", { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 })
+        .fromTo("#start .slider .text strong", { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 })
+        .fromTo("#start .slider .text a", { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
+
+    const tl2 = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#business",
+            start: "top 80%",
+            end: "bottom 20%",
+        },
+    });
+    let businessList = document.querySelectorAll("#business .content-item");
+    tl2.fromTo(businessList, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.5 });
+
+    const tl3 = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#portfolio",
+            start: "top 80%",
+            end: "bottom 20%",
+        },
+    });
+    let portfolioList = document.querySelectorAll("#portfolio .content-item");
+    portfolioList.forEach(function (item, i) {
+        if (i % 2 == 1) {
+            tl3.fromTo(item, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
+        } else {
+            tl3.fromTo(item, { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
+        }
+    });
+
+	const tl4 = gsap.timeline({
+		scrollTrigger: {
+			trigger: "#culture",
+			start: "top 80%",
+			end: "bottom 20%",
+		},
+	});
+
+	let cultureList = document.querySelectorAll("#culture .content-item");
+
+	cultureList.forEach(function (item, i) {
+		const line = item.querySelector(".line"); 
+
+		if (i % 2 == 1) {
+			tl4.fromTo(item, { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6 });
+		} else {
+			tl4.fromTo(item, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6 });
+		}
+
+		tl4.fromTo(line, { height: 0 }, { height: "100px", duration: 0.5 }, "<");
+	});
+
+    const tl5 = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#awards",
+            start: "top 80%",
+            end: "bottom 20%",
+        },
+    });
+    let awardsList = document.querySelectorAll("#awards .content-item");
+    awardsList.forEach(function (item, i) {
+        if (i % 2 == 1) {
+            tl5.fromTo(item, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
+        } else {
+            tl5.fromTo(item, { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
+        }
+    });
+
+	// 탑 버튼
+
+	let btnTop = document.querySelector(".btn_top");
+
+	// 스크롤 시 버튼 보이기/숨기기
+	window.addEventListener("scroll", function () {
+		if (window.scrollY > 300) {
+			btnTop.classList.add("show");  
+		} else {
+			btnTop.classList.remove("show");  
+		}
+	});
+
+	// 버튼 클릭 시 상단으로 스크롤
+	btnTop.addEventListener("click", function (e) {
+		e.preventDefault();
+		gsap.to(window, { scrollTo: 0, duration: 0.5 });
+	});
+
+});
+
+    </script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <!-- 스킵 네비게이션 -->
+      <div class="skip_nav">
+        <a href="">본문 바로가기</a>
+      </div>
+
+      <div id="start">
+		<!-- 헤더 -->
+        <header id="header">
+          <div class="inner">
+            <div class="logo">
+              <h1>
+                <a href=""><img src="images/logo.svg" alt="logo" /></a>
+              </h1>
+            </div>
+            <nav id="desktop">
+              <ul>
+                <li><a href="">HOME</a></li>
+                <li><a href="">BUSINESS</a></li>
+                <li><a href="">PRODUCTS</a></li>
+                <li><a href="">HISTORY</a></li>
+                <li><a href="">AWARDS</a></li>
+                <li><a href="">CONTACT</a></li>
+              </ul>
+            </nav>
+
+            <nav id="mobile">
+              <ul>
+                <li><a href="">HOME</a></li>
+                <li><a href="">BUSINESS</a></li>
+                <li><a href="">PRODUCTS</a></li>
+                <li><a href="">HISTORY</a></li>
+                <li><a href="">AWARDS</a></li>
+                <li><a href="">CONTACT</a></li>
+              </ul>
+            </nav>
+			<a href="" class="tab">tab</a>
+          </div>
+        </header>
+		<div class="dim"></div>
+
+        <div class="slider">
+          <div class="text">
+            <p>Kodak : </p>
+            <span>
+              코닥은 인쇄 및 첨단 소재/화학 제품에 중점을 둔 글로벌 기술 회사입니다.<br />
+              당사는 주로 상업 인쇄, 포장, 출판, 제조, 엔터테인먼트 분야의 고객에게 <br/> 업계 최고의 하드웨어, 소프트웨어, 소모품, 서비스를 제공합니다.</span
+            >
+            <!-- <a href="">MORE</a> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 -->
+      <section id="business">
+        <div class="inner">
+          <div class="title">
+            <strong>BUSINESS</strong>
+            <p>
+              코닥은 지속 가능한 솔루션을 개발하는 데 있어 환경적 책임감과 지속적 리더십에 최선을 다합니다.
+            </p>
+          </div>
+          <div class="content">
+            <div class="content-item">
+              <div class="content-inner">
+                <div class="photo">
+                  <img src="images/icon_business1.png" alt="icon_business1" />
+                </div>
+                <div class="text">
+                  <p><strong>디지털 인쇄</strong></p>
+                  <ul>
+                    <li>
+                      <p>코닥 PROSPER 프레스</p>
+                    </li>
+                    <li>
+                      <p>차세대 ULTRASTREAM 잉크젯 기술</p>
+                    </li>
+                    <li>
+                      <p>연속 잉크젯 인쇄 솔루션</p>
+                    </li>
+                    <li>
+                      <p>코닥 잉크 및 코팅</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <div class="photo">
+                  <img src="images/icon_business2.png" alt="icon_business2" />
+                </div>
+                <div class="text">
+                  <p><strong>일반 인쇄</strong></p>
+                  <ul>
+                    <li>
+                      <p>SONORA 무현상 판재</p>
+                    </li>
+                    <li>
+                      <p>오프셋 판재</p>
+                    </li>
+                    <li>
+                      <p>CTP(Computer-to-plate)</p>
+                    </li>
+                    <li>
+                      <p>이미징 장치</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <div class="photo">
+                  <img src="images/icon_business3.png" alt="icon_business3" />
+                </div>
+                <div class="text">
+                  <p><strong>첨단 소재 및 화학</strong></p>
+                  <ul>
+                    <li>
+                      <p>영화, 소비자용, 전문가용, 산업용 필름</p>
+                    </li>
+                    <li>
+                      <p>첨단 소재</p>
+                    </li>
+                    <li>
+                      <p>기능성 인쇄 솔루션</p>
+                    </li>
+                    <li>
+                      <p>합성 화학 물질</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="portfolio">
+        <div class="inner">
+          <div class="title">
+            <strong>PRODUCTS</strong>
+            <p>코닥은 새로운 이야기를 다시 써 내려갈 수 있도록 돕고 있습니다.</p>
+          </div>
+          <div class="content">
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/portfolio1.jpg" alt="portfolio1" />
+                  </div>
+                  <div class="text">
+                    <strong>광고 및 DM(광고용 우편물)</strong>
+                    <span>KODAK 개인화 맞춤형 우편 솔루션</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/portfolio2.jpg" alt="portfolio2" />
+                  </div>
+                  <div class="text">
+                    <strong>패키징 및 라벨링</strong>
+                    <span>최고의 패키지 인쇄 플랫폼</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/portfolio3.jpg" alt="portfolio3" />
+                  </div>
+                  <div class="text">
+                    <strong>출판</strong>
+                    <span>디지털 솔루션을 사용해 고품질 인쇄</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/portfolio4.jpg" alt="portfolio4" />
+                  </div>
+                  <div class="text">
+                    <strong>데코 & 직물</strong>
+                    <span>저렴한 가격으로 고부가가치</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/portfolio5.jpg" alt="portfolio5" />
+                  </div>
+                  <div class="text">
+                    <strong>보안</strong>
+                    <span>브랜드 자산 및 소비자 신뢰에 대한 위협 방지</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/portfolio6.jpg" alt="portfolio6" />
+                  </div>
+                  <div class="text">
+                    <strong>트랜잭션</strong>
+                    <span>맞춤형 채널 및 보안</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="culture">
+        <div class="inner">
+          <div class="title">
+            <strong>HISTORY</strong>
+            <p>
+              조지 이스트먼은 "버튼을 누르면 나머지는 저희가 해드립니다(You press the button - we do the rest)" <br />
+              라는 슬로건 아래 1888년에 전 세계의 소비자를 위해 최초의 간편한 카메라를 출시했습니다.
+            </p>
+          </div>
+          <div class="content">
+            <div
+              class="content-item left"
+            >
+              <div class="text">
+                <strong
+                  >사진</strong
+                >
+                <p>
+                  설립자인 조지 이스트먼은 사진을 "연필처럼 편리하게 사용할 수 있도록” 만드는 데 평생을 바쳤습니다. 그의 회사는 그 이후로 사진과 디지털 이미징 분야에서 가장 중요한 이정표의 중심에 있었습니다.
+                </p>
+              </div>
+              <div class="photo">
+                <img src="images/culture1.jpg" alt="culture1" />
+				<div class="line"></div>
+              </div>
+            </div>
+            <div
+              class="content-item right"
+            >
+              <div class="text">
+                <strong
+                  >영화</strong
+                >
+                <p>
+                  조지 이스트먼이 1889년에 최초의 상업용 투명 롤 필름을 출시했을 때 토마스 에디슨은 최초의 영화 카메라를 발명했습니다. 그 이후 코닥은 영화 산업에 대한 기술적 공헌으로 영화 스튜디오를 제외한 업체 중에는 가장 많은 9개의 오스카상을 받았습니다.
+                </p>
+              </div>
+              <div class="photo">
+                <img src="images/culture2.jpg" alt="culture2" />
+				<div class="line"></div>
+              </div>
+            </div>
+            <div
+              class="content-item left"
+            >
+              <div class="text">
+                <strong
+                  >인쇄 및 출판</strong
+                >
+                <p>
+                  코닥은 1912년 인쇄 산업을 위해 개발된 소재를 처음으로 판매했습니다. 1950년대와 1960년대에는 서적과 매거진의 컬러 혁명을 불러일으켰습니다. 오늘날 우리는 상업 인쇄업체와 출판사에 지속 가능한 디지털 솔루션을 제공하는 새로운 혁명을 이끌고 있습니다.
+                </p>
+              </div>
+              <div class="photo">
+                <img src="images/culture3.jpg" alt="culture3" />
+				<div class="line"></div>
+              </div>
+            </div>
+            <div
+              class="content-item right"
+            >
+              <div class="text">
+                <strong
+                  >문서 이미징</strong
+                >
+                <p>
+                  한때 은행원으로 근무했던 조지 이스트먼의 경험을 생각해 보면 코닥이 문서를 보존, 복사 및 관리하는 다양한 기술을 개발한 것은 놀라운 일이 아닙니다. 코닥 문서 기술의 후계자 중 하나는 오늘날 인쇄 업계에서 가장 빠른 상업용 잉크젯 인쇄 엔진입니다.
+                </p>
+              </div>
+              <div class="photo">
+                <img src="images/culture4.jpg" alt="culture4" />
+				<div class="line"></div>
+              </div>
+            </div>
+            <div
+              class="content-item left"
+            >
+              <div class="text">
+                <strong
+                  >의료 영상</strong
+                >
+                <p>
+                  의료 영상 분야에서 코닥의 활약은 빌헬름 뢴트겐이 엑스레이를 개발한 후 1년이 채 되지 않아 시작되었습니다. 그 후 수십 년 동안 코닥 기술은 의료 전문가가 환자의 몸 속의 상태를 파악하는 데 큰 지원을 제공했습니다.
+                </p>
+              </div>
+              <div class="photo">
+                <img src="images/culture5.jpg" alt="culture5" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="awards">
+        <div class="inner">
+          <div class="title">
+            <strong>AWARDS</strong>
+            <p>
+              코닥은 선도적인 인쇄 단체에서 여러 상을 수상하면서 최첨단 기술에 대한 인정을 계속해서 받고 있습니다.
+            </p>
+          </div>
+          <div class="content">
+            <div class="content-item">
+              <div class="content-inner">
+                <a href="">
+                  <div class="photo">
+                    <img src="images/img_award1.jpg" alt="awards1" />
+                  </div>
+                  <div class="text">
+                    <strong>프린팅 유나이티드 얼라이언스</strong>
+                    <ul>
+                      <li>
+                        <p>2020년 10월</p>
+                      </li>
+                      <li>
+                        <p>올해의 제품상</p>
+                      </li>
+                      <li>
+                        <p>코닥 PROSPER QD 포장 잉크</p>
+                      </li>
+                    </ul>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div
+                class="content-inner"
+              >
+                <a href="">
+                  <div class="photo">
+                    <img src="images/img_award2.jpg" alt="awards2" />
+                  </div>
+                  <div class="text">
+                    <strong>EDP 어워드</strong>
+                    <ul>
+                      <li>
+                        <p>2020년 12월</p>
+                      </li>
+                      <li>
+                        <p>산업 EDP 어워드</p>
+                      </li>
+                      <li>
+                        <p>코닥 항균 투명 건식 잉크</p>
+                      </li>
+                    </ul>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="content-item">
+              <div
+                class="content-inner"
+              >
+                <a href="">
+                  <div class="photo">
+                    <img src="images/img_award3.jpg" alt="awards3" />
+                  </div>
+                  <div class="text">
+                    <strong>피나클 인터테크 어워드</strong>
+                    <ul>
+                      <li>
+                        <p>2021년</p>
+                      </li>
+                      <li>
+                        <p>혁신적인 기술에 수여</p>
+                      </li>
+                      <li>
+                        <p>코닥 SONORA XTRA 무현상 판재</p>
+                      </li>
+                    </ul>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="logo">
+        <div class="inner">
+          <ul class="logo-list">
+            <li>
+              <a href=""
+                ><img src="images/signature1.jpg" alt="signature1"
+              /></a>
+            </li>
+            <li>
+              <a href=""
+                ><img src="images/signature2.jpg" alt="signature2"
+              /></a>
+            </li>
+            <li>
+              <a href=""
+                ><img src="images/signature3.jpg" alt="signature3"
+              /></a>
+            </li>
+            <li>
+              <a href=""
+                ><img src="images/signature4.jpg" alt="signature4"
+              /></a>
+            </li>
+            <li>
+              <a href=""
+                ><img src="images/signature5.jpg" alt="signature5"
+              /></a>
+            </li>
+            <li>
+              <a href=""
+                ><img src="images/signature6.jpg" alt="signature6"
+              /></a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="inner">
+          <div class="title">
+            <strong>CONTACT US</strong>
+            <p>다양한 경험과 노하우로 성공을 설계합니다.</p>
+          </div>
+          <div class="content">
+            <form>
+              <div class="top">
+                <span class="row">
+                  <input type="text" placeholder="YOUR NAME*" class="name" />
+                  <input
+                    type="email"
+                    placeholder="YOUR E-MAIL*"
+                    class="email"
+                  />
+                  <input type="text" placeholder="SUBJECT*" class="subject" />
+                </span>
+                <textarea
+                  class="message"
+                  placeholder="YOUR MESSAGE*"
+                ></textarea>
+              </div>
+              <div class="button">
+                <input type="submit" value="SEND MESSAGE" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 푸터 -->
+      <footer id="footer">
+        <div class="inner">
+          <div class="footer-left">
+            <div class="info">
+              <ul>
+                <li>
+                  <p>월드 와이드 본사</p>
+                </li>
+                <li><p>343 State Street</p></li>
+                <li><p>Rochester, NY 14650</p></li>
+                <li><p>USA</p></li>
+              </ul>
+            </div>
+
+            <div class="copyright">
+              <p>Copyright ©2024 Eastman Kodak Company. All Rights Reserved.</p>
+            </div>
+          </div>
+          <div class="footer-right">
+            <div class="sns">
+              <ul>
+                <li>
+                  <a href=""><i class="fa-brands fa-twitter"></i></a>
+                </li>
+                <li>
+                  <a href=""><i class="fa-brands fa-facebook-f"></i></a>
+                </li>
+                <li>
+                  <a href=""><i class="fa-brands fa-pinterest"></i></a>
+                </li>
+                <li>
+                  <a href=""><i class="fa-brands fa-google-plus-g"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+	  <a href="#" class="btn_top">
+		<i class="fa-solid fa-arrow-up"></i>
+	  </a>
+    </div>
+  </body>
+</html>
